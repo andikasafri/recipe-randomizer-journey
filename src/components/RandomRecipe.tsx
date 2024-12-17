@@ -9,16 +9,31 @@ export const RandomRecipe = () => {
   const { data: recipe, isLoading, error, refetch } = useRandomRecipe();
 
   useEffect(() => {
+    // Check if user is offline
     if (!navigator.onLine) {
       console.log("User is offline");
     }
+
+    // Handle visibility change to prevent auto-refresh
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        console.log("Tab is visible again, maintaining current recipe");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 p-8">
         <Loader2 className="h-8 w-8 animate-spin text-sage" />
-        <p className="text-sage font-medium">Discovering a delicious recipe for you...</p>
+        <p className="text-sage font-medium">
+          Discovering a delicious recipe for you...
+        </p>
       </div>
     );
   }

@@ -1,7 +1,6 @@
 import { RandomRecipe } from "@/components/RandomRecipe";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { RefreshRecipeButton } from "@/components/RefreshRecipeButton";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const { toast } = useToast();
@@ -27,6 +26,7 @@ const Index = () => {
           <p className="text-gray-600 mb-8">
             Discover new recipes with just one click!
           </p>
+          <RefreshRecipeButton className="mb-8" />
         </div>
 
         <RandomRecipe />
