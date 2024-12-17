@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchRandomRecipe, type Recipe } from "@/lib/api";
+import { fetchRandomRecipe } from "@/lib/api";
 import { RecipeCard } from "@/components/RecipeCard";
+import { Categories } from "@/components/Categories";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { toast } = useToast();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
 
   const { data: recipe, refetch, isLoading, error } = useQuery({
@@ -29,6 +31,11 @@ const Index = () => {
     setIsGenerating(true);
     await refetch();
     setIsGenerating(false);
+  };
+
+  const handleSelectCategory = (category: string) => {
+    setSelectedCategory(category);
+    // Additional logic for category selection can be added here
   };
 
   return (
@@ -65,6 +72,13 @@ const Index = () => {
         )}
 
         {recipe && <RecipeCard recipe={recipe} />}
+
+        <div className="mt-12">
+          <h2 className="text-2xl font-playfair text-sage mb-6">
+            Browse by Category
+          </h2>
+          <Categories onSelectCategory={handleSelectCategory} />
+        </div>
       </div>
     </div>
   );
