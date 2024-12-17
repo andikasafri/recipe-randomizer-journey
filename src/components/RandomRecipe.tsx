@@ -4,8 +4,10 @@ import { RecipeCard } from "@/components/RecipeCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const RandomRecipe = () => {
+  const { toast } = useToast();
   const { data: recipe, isLoading, error, refetch } = useRandomRecipe();
 
   useEffect(() => {
@@ -26,6 +28,16 @@ export const RandomRecipe = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (recipe) {
+      toast({
+        title: "Recipe Loaded",
+        description: `Enjoy cooking ${recipe.strMeal}!`,
+        duration: 3000,
+      });
+    }
+  }, [recipe, toast]);
 
   if (isLoading) {
     return (
