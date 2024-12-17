@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Recipe } from "@/lib/api";
+import { Recipe } from "@/lib/types";
 import { animateRecipeCard } from "@/lib/animations";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
