@@ -1,24 +1,54 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { useState, useEffect, useCallback } from 'react';
+import { Recipe } from './types/interfaces';
+import { fetchRandomRecipe } from './services/api';
+import { formatApiError } from './utils/api-helpers';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { MainLayout } from './components/layout/MainLayout';
 
-const queryClient = new QueryClient();
+/**
+ * App component serves as the main entry point for the application.
+ * It manages the state for the recipe, loading status, and error messages.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
+function App() {
+  // State variables
+  const [recipe, setRecipe] = useState<Recipe | null>(null); // State for the recipe object
+  const [loading, setLoading] = useState<boolean>(false); // State for loading status
+  const [error, setError] = useState<string | null>(null); // State for error messages
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  /**
+   * Fetches a random recipe and updates the state.
+   * It handles loading state and error management.
+   */
+  const getRandomRecipe = useCallback(async () => {
+    setLoading(true); // Set loading to true when fetching starts
+    setError(null); // Reset error state
+    try {
+      const newRecipe = await fetchRandomRecipe(); // Fetch a new recipe
+      setRecipe(newRecipe); // Update the recipe state
+    } catch (err) {
+      setError(formatApiError(err)); // Format and set the error message
+    } finally {
+      setLoading(false); // Set loading to false when fetching is done
+    }
+  }, []); // Empty dependency array ensures this function is stable
 
-export default App;
+  // Effect to fetch a random recipe on component mount
+  useEffect(() => {
+    getRandomRecipe(); // Call the function to fetch a random recipe
+  }, [getRandomRecipe]); // Dependency on getRandomRecipe
+
+  return (
+    <ErrorBoundary>
+      <MainLayout
+        recipe={recipe} // Pass the recipe to the layout
+        loading={loading} // Pass the loading state to the layout
+        error={error} // Pass the error message to the layout
+        onDiscover={getRandomRecipe} // Pass the function to fetch a new recipe
+      />
+    </ErrorBoundary>
+  );
+}
+
+export default App; // Exporting the App component

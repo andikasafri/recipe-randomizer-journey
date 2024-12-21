@@ -1,69 +1,160 @@
-# Welcome to your Lovable project
+# Recipe Explorer
 
-## Project info
+## Table of Contents
 
-**URL**: https://lovable.dev/projects/c4497894-1f87-4438-8222-3d028f07b205
+- [Introduction](#introduction)
+- [How it Works](#how-it-works)
+- [Features](#features)
+- [Progress](#progress)
+- [Demo](#demo)
+- [Installation & Contribution](#installation--contribution)
+- [API Integration](#api-integration)
+- [License](#License)
+- [Connect with Me](#connect-with-me)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## Introduction
 
-**Use Lovable**
+The **Recipe Explorer** is a web application that helps users discover random recipes fetched from TheMealDB API.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c4497894-1f87-4438-8222-3d028f07b205) and start prompting.
+### Key Highlights:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Enhanced TypeScript Support**: Transitioned from JavaScript to TypeScript for better type safety and maintainability.
+- **Improved Error Handling**: Robust handling of API errors ensures smooth user experience.
+- **Refined UI**: A clean and responsive interface to display recipes attractively.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## How it Works
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The app fetches random recipes using TheMealDB API and displays them dynamically. Users can:
 
-Follow these steps:
+1. Click a button to fetch a new recipe.
+2. View detailed recipe instructions and ingredients.
+3. Enjoy seamless error and loading state management.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Features
 
-# Step 3: Install the necessary dependencies.
-npm i
+- Random recipe generator powered by TheMealDB API.
+- Displays recipe details, including ingredients and cooking instructions.
+- Modular and readable TypeScript code.
+- Comprehensive error handling for better stability.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+---
+
+## Progress
+
+### Completed:
+
+- Converted JavaScript codebase to TypeScript.
+- Implemented the core functionality to fetch and display random recipes.
+- Modularized the codebase for better structure and readability.
+
+### Next Steps:
+
+- Add unit tests for all key components.
+- Refine code for optimization and scalability.
+
+---
+
+## Demo
+
+Check out the live demo of the application here: [Live Demo](#) _(Replace this with your demo URL)._
+
+---
+
+## Installation & Contribution
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/revou-fsse-oct24/module-3-andikasafri.git
+```
+
+````
+
+### Install Dependencies
+
+Navigate to the project directory and run:
+
+```bash
+npm install
+```
+
+### Start the Application
+
+Run the development server:
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## API Integration
 
-**Use GitHub Codespaces**
+The application uses TheMealDB API for fetching recipes.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### API Service Code
 
-## What technologies are used for this project?
+Below is the TypeScript implementation for API calls:
 
-This project is built with .
+```typescript
+const BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+const fetchFromApi = async <T>(endpoint: string): Promise<T> => {
+  const response = await fetch(`${BASE_URL}/${endpoint}`);
+  if (!response.ok) {
+    throw new ApiError(
+      `Failed to fetch (${response.status}): ${response.statusText}`,
+      'FETCH_ERROR',
+      response.status
+    );
+  }
+  return response.json();
+};
 
-## How can I deploy this project?
+export const fetchRandomRecipe = async (): Promise<Recipe> => {
+  const { meals } = await fetchFromApi<{ meals: Recipe[] }>('random.php');
+  if (!meals?.length) {
+    throw new ApiError('No recipe data available.', 'NO_DATA', 0);
+  }
+  return meals[0];
+};
+```
 
-Simply open [Lovable](https://lovable.dev/projects/c4497894-1f87-4438-8222-3d028f07b205) and click on Share -> Publish.
+### Error Handling Code
 
-## I want to use a custom domain - is that possible?
+Error handling is managed using a custom `ApiError` class:
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+```typescript
+export class ApiError extends Error {
+  public readonly code: string;
+  public readonly retryCount: number;
+
+  constructor(message: string, code: string, retryCount: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code;
+    this.retryCount = retryCount;
+  }
+}
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## 📧 Connect with Me
+
+[![Linkedin Badge](https://img.shields.io/badge/-Andika_Safri-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/andika-safri/)
+[![Instagram Badge](https://img.shields.io/badge/-Andika_Safri-purple?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/dikko_pujangga/)
+[![Gmail Badge](https://img.shields.io/badge/-andika.saf3@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white)](mailto:andika.saf3@gmail.com)
+````
