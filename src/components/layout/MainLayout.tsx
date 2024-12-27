@@ -1,7 +1,7 @@
 import { Recipe } from '../../types/interfaces';
 import { HeroSection } from '../HeroSection';
 import { RecipeContent } from './RecipeContent';
-import { FloatingDiscoverButton } from '../FloatingDiscoveryButton';
+import { FloatingDiscoverButton } from '../FloatingDiscoverButton';
 
 interface MainLayoutProps {
   recipe: Recipe | null;
@@ -32,9 +32,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     </header>
 
     {/* Main Content */}
-    <div className="max-w-7xl mx-auto px-4 py-8 pb-24 md:pb-32">
-      {' '}
-      {/* Added bottom padding */}
+    <div className="max-w-7xl mx-auto px-4 py-8 pb-24 md:pb-32"> {/* Added bottom padding */}
       <div className="md:grid md:grid-cols-[300px_1fr] md:gap-8">
         {/* Left Column */}
         <aside className="mb-8 md:mb-0 md:sticky md:top-24">

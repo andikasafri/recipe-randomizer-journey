@@ -1,37 +1,48 @@
 import { ApiError } from '../types/errors';
-import { Recipe } from '../types/interfaces';
+import { Recipe, ApiResponse } from '../types/interfaces';
 
 const BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
 
 /**
- * Fetch data from TheMealDB API with error handling.
- *
- * @param endpoint - API endpoint to fetch data from.
- * @returns Parsed response data.
- * @throws ApiError on fetch failure.
+ * Generic function to fetch data from the API
  */
-const fetchFromApi = async <T>(endpoint: string): Promise<T> => {
-  const response = await fetch(`${BASE_URL}/${endpoint}`);
-  if (!response.ok) {
+export const fetchFromApi = async <T>(endpoint: string): Promise<T> => {
+  try {
+    const response = await fetch(`${BASE_URL}/${endpoint}`);
+    
+    if (!response.ok) {
+      throw new ApiError(
+        `Failed to fetch (${response.status}): ${response.statusText}`,
+        'FETCH_ERROR',
+        response.status
+      );
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    
+    // Handle network errors or other fetch failures
     throw new ApiError(
-      `Failed to fetch (${response.status}): ${response.statusText}`,
-      'FETCH_ERROR',
-      response.status
+      'Network error occurred while fetching data',
+      'NETWORK_ERROR',
+      0
     );
   }
-  return response.json();
 };
 
 /**
- * Fetch a random recipe.
- *
- * @returns A single recipe.
- * @throws ApiError if no recipe is found or the fetch fails.
+ * Fetch a random recipe from the API
  */
 export const fetchRandomRecipe = async (): Promise<Recipe> => {
-  const { meals } = await fetchFromApi<{ meals: Recipe[] }>('random.php');
-  if (!meals?.length) {
+  const data = await fetchFromApi<ApiResponse<Recipe>>('random.php');
+  
+  if (!data.meals || data.meals.length === 0) {
     throw new ApiError('No recipe data available.', 'NO_DATA', 0);
   }
-  return meals[0];
+  
+  return data.meals[0];
 };

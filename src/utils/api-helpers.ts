@@ -1,13 +1,20 @@
 import { ApiError } from '../types/errors';
 
-const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff delays in milliseconds
+// Define retry configuration
+const RETRY_CONFIG = {
+  delays: [1000, 2000, 4000] as const,
+  maxAttempts: 3,
+} as const;
 
 /**
- * Fetches a resource with retry logic in case of failure.
- * @param url - The URL to fetch.
- * @param options - Optional fetch options.
- * @param retryCount - The current retry attempt count.
- * @returns A promise that resolves to the response.
+ * Type guard to check if an error is an instance of Error
+ */
+function isError(error: unknown): error is Error {
+  return error instanceof Error;
+}
+
+/**
+ * Enhanced fetch with retry capability and proper error handling
  */
 export async function fetchWithRetry(
   url: string,
@@ -26,58 +33,46 @@ export async function fetchWithRetry(
     }
 
     return response;
-  } catch (err) {
-    return handleFetchError(err, url, options, retryCount);
+  } catch (error) {
+    if (retryCount >= RETRY_CONFIG.maxAttempts) {
+      throw new ApiError(
+        'Maximum retry attempts reached',
+        'MAX_RETRY_EXCEEDED',
+        retryCount
+      );
+    }
+
+    // Log the error with proper type checking
+    if (isError(error)) {
+      console.error(`Fetch attempt ${retryCount + 1} failed:`, error.message);
+    } else {
+      console.error(`Fetch attempt ${retryCount + 1} failed with unknown error`);
+    }
+
+    // Wait before retrying
+    await delay(RETRY_CONFIG.delays[retryCount]);
+    return fetchWithRetry(url, options, retryCount + 1);
   }
 }
 
 /**
- * Handles errors during the fetch operation and retries if applicable.
- * @param error - The error that occurred.
- * @param url - The URL to fetch.
- * @param options - Optional fetch options.
- * @param retryCount - The current retry attempt count.
- * @returns A promise that resolves to the response or throws an error.
- */
-async function handleFetchError(
-  error: unknown,
-  url: string,
-  options: RequestInit,
-  retryCount: number
-): Promise<Response> {
-  console.error('Fetch error:', error);
-
-  if (retryCount >= RETRY_DELAYS.length) {
-    throw new ApiError(
-      'Maximum retry attempts reached',
-      'MAX_RETRY_EXCEEDED',
-      retryCount
-    );
-  }
-
-  await delay(RETRY_DELAYS[retryCount]);
-  return fetchWithRetry(url, options, retryCount + 1);
-}
-
-/**
- * Delays execution for a specified amount of time.
- * @param ms - The delay duration in milliseconds.
+ * Creates a promise that resolves after a specified delay
  */
 function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
- * Formats an API error into a readable string.
- * @param error - The error to format.
- * @returns A formatted error message.
+ * Formats any error into a user-friendly message
  */
 export function formatApiError(error: unknown): string {
   if (error instanceof ApiError) {
-    return `${error.message} (${error.code})`;
+    return `${error.message} (Error Code: ${error.code})`;
   }
-  if (error instanceof Error) {
-    return error.message;
+  
+  if (isError(error)) {
+    return `An error occurred: ${error.message}`;
   }
+  
   return 'An unexpected error occurred';
 }

@@ -19,14 +19,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => (
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-        <p className="text-sm uppercase tracking-wide mb-2 opacity-90 font-['Lato']">
+        <p className="text-sm uppercase tracking-wide mb-2 opacity-90">
           {recipe.strCategory}
         </p>
-        <h2 className="font-['Merriweather'] text-2xl font-bold mb-2">
+        <h2 className="text-2xl font-bold mb-2">
           {recipe.strMeal}
         </h2>
         <div className="flex items-center justify-between">
-          <p className="text-sm opacity-90 font-['Open Sans']">
+          <p className="text-sm opacity-90">
             {recipe.strArea} Cuisine
           </p>
           {recipe.strYoutube && <VideoButton videoUrl={recipe.strYoutube} />}

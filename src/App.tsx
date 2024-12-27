@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Recipe } from './types/interfaces';
-import { fetchRandomRecipe } from './services/api';
-import { formatApiError } from './utils/api-helpers';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { MainLayout } from './components/layout/MainLayout';
+import { useState, useEffect, useCallback } from 'react'; // Importing React hooks
+import { Recipe } from './types/interfaces'; // Importing the Recipe type for type safety
+import { fetchRandomRecipe } from './services/api'; // Importing the function to fetch a random recipe
+import { formatApiError } from './utils/api-helpers'; // Importing the function to format API errors
+import { ErrorBoundary } from './components/ErrorBoundary'; // Importing the ErrorBoundary component for error handling
+import { MainLayout } from './components/layout/MainLayout'; // Importing the MainLayout component for layout
 
 /**
  * App component serves as the main entry point for the application.

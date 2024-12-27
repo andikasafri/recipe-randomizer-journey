@@ -43,7 +43,7 @@ export const FloatingDiscoverButton: React.FC<FloatingDiscoverButtonProps> = ({
                  md:bottom-8 md:right-8`}
       aria-label={loading ? 'Loading recipe' : 'Discover new recipe'}
     >
-      <RefreshCw
+      <RefreshCw 
         className={`w-5 h-5 ${loading ? 'animate-spin' : 'group-hover:rotate-180'} 
                    transition-transform duration-300`}
         aria-hidden="true"
