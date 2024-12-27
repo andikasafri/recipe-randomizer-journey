@@ -2,6 +2,8 @@
 
 Welcome to the **Random Recipe Explorer**! Discover random recipes from an external API and enjoy a delightful culinary experience. This modern web application is built with React and TypeScript, showcasing clean code and a seamless user interface.
 
+[![Random Recipe Explorer](./assets/random-recipe.png)](https://random-recipe-website.netlify.app)
+
 ---
 
 ## Table of Contents
