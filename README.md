@@ -43,8 +43,8 @@ Welcome to the **Random Recipe Explorer**! Discover random recipes from an exter
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/random-recipe-explorer.git
-cd random-recipe-explorer
+git clone https://github.com/yourusername/recipe-randomizer-journey.
+cd recipe-randomizer-journey
 ```
 
 ### 2. Install dependencies:
